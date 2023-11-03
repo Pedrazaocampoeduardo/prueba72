@@ -1,0 +1,602 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>Pr&aacute;ctica 7: Series de Fourier en tiempo continuo</title>
+<meta name="generator" content="MATLAB 23.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2023-11-03">
+<meta name="DC.source" content="prueba7.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h1>Pr&aacute;ctica 7: Series de Fourier en tiempo continuo</h1>
+<!--introduction-->
+<pre>* Moreno Castro Jos&eacute; Pablo
+ * Pedraza Ocampo Eduardo
+ * Portillo Mart&iacute;nez Carolina
+ * Reyes Alvarez Angel</pre>
+<!--/introduction-->
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">Problema 1</a>
+</li>
+<li>
+<a href="#2">Problema 2</a>
+</li>
+<li>
+<a href="#3">Problema 3</a>
+</li>
+</ul>
+</div>
+<h2 id="1">Problema 1</h2>
+<p>La serie de fourier exponencial completa es <img src="prueba7_eq04795006095091625113.png" alt="$x(t) = \frac{8A}{\pi^2} [ \cos(\pi t - 90^\circ) + \frac{1}{9} \cos(3\pi t + 90^\circ) + \frac{1}{25} \cos(5\pi t - 90^\circ) + \frac{1}{49} \cos (7\pi t + 90^\circ) + \ldots ]$" style="width:557px;height:19px;"> y la compacta es <img src="prueba7_eq13340183868538080500.png" alt="$x(t) = \frac{8A}{\pi^2} \sum_{n = 1, 3, 5, 7, \ldots} \frac{1}{n^2} \cos(2\pi n t - 90^\circ)$" style="width:251px;height:20px;"></p>
+<pre class="codeinput">A = 1;
+T = 2;
+f0 = 1 / T;
+N = 8; <span class="comment">% Cambia este valor a la cantidad de arm&oacute;nicos deseada</span>
+
+t = linspace(-5 * T, 5 * T, 1000);
+
+x_t = (8 * A / pi^2) * cos(2 * pi * 1 * f0 * t - pi/2);
+<span class="keyword">for</span> n = 3:2:2*N-1
+    x_t = x_t + (8 * A / (pi^2 * n^2)) * cos(2 * pi * n * f0 * t - pi/2);
+<span class="keyword">end</span>
+
+<span class="comment">% Crea una figura m&aacute;s grande con 3 filas y 2 columnas</span>
+figure(<span class="string">'Position'</span>, [100, 100, 1000, 800]);
+
+<span class="comment">% Gr&aacute;fica de la Serie de Fourier</span>
+subplot(3, 2, 1);
+plot(t, x_t, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa</span>
+xlabel(<span class="string">'t'</span>);
+ylabel(<span class="string">'x(t)'</span>);
+title(<span class="string">'Serie de Fourier (5 Repeticiones)'</span>);
+grid <span class="string">on</span>;
+
+<span class="comment">% Genera la se&ntilde;al cuadrada manualmente</span>
+x_original = zeros(size(t));
+<span class="keyword">for</span> i = 1:numel(t)
+    <span class="keyword">if</span> sin(2 * pi * f0 * t(i)) &gt;= 0
+        x_original(i) = A;
+    <span class="keyword">else</span>
+        x_original(i) = -A;
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="comment">% Gr&aacute;fica de la Se&ntilde;al Original y Serie de Fourier</span>
+subplot(3, 2, 2);
+plot(t, x_t, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa y color azul</span>
+hold <span class="string">on</span>;
+plot(t, x_original, <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa y color rojo</span>
+xlabel(<span class="string">'t'</span>);
+ylabel(<span class="string">'x(t)'</span>);
+title(<span class="string">'Se&ntilde;al Original y Serie de Fourier (15 Arm&oacute;nicos)'</span>);
+legend(<span class="string">'Serie de Fourier'</span>, <span class="string">'Se&ntilde;al Original'</span>);
+grid <span class="string">on</span>;
+
+<span class="comment">% Error (Diferencia entre Se&ntilde;al Original y Serie de Fourier)</span>
+error_t = x_original - x_t;
+subplot(3, 2, 3);
+plot(t, error_t, <span class="string">'g'</span>, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa y color verde</span>
+xlabel(<span class="string">'t'</span>);
+ylabel(<span class="string">'Error'</span>);
+title(<span class="string">'Error (Diferencia entre Se&ntilde;al Original y Serie de Fourier)'</span>);
+grid <span class="string">on</span>;
+
+<span class="comment">% Energ&iacute;a del Error</span>
+E_error = trapz(t, error_t.^2);
+subplot(3, 2, 4);
+plot(t, error_t.^2, <span class="string">'m'</span>, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa y color magenta</span>
+xlabel(<span class="string">'t'</span>);
+ylabel(<span class="string">'Energ&iacute;a'</span>);
+title([<span class="string">'Energ&iacute;a del Error = '</span> num2str(E_error)]);
+grid <span class="string">on</span>;
+
+<span class="comment">% Espectro de Magnitud (15 Arm&oacute;nicos)</span>
+frequencies = 0:f0:(N-1)*f0; <span class="comment">% Ajusta el rango de frecuencias</span>
+magnitudes = (8 * A / pi^2) * (1 ./ (1:2:2*N-1)).^2;
+subplot(3, 2, 5);
+stem(frequencies, magnitudes, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa y color azul</span>
+xlabel(<span class="string">'Frecuencia (Hz)'</span>);
+ylabel(<span class="string">'Magnitud'</span>);
+title(<span class="string">'Espectro de Magnitud (15 Arm&oacute;nicos)'</span>);
+grid <span class="string">on</span>;
+
+<span class="comment">% Espectro de Fase (15 Arm&oacute;nicos)</span>
+phases = ones(1, N) * (-pi/2);
+subplot(3, 2, 6);
+stem(frequencies, phases, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2); <span class="comment">% L&iacute;nea m&aacute;s gruesa y color azul</span>
+xlabel(<span class="string">'Frecuencia (Hz)'</span>);
+ylabel(<span class="string">'Fase (rad)'</span>);
+title(<span class="string">'Espectro de Fase (15 Arm&oacute;nicos)'</span>);
+grid <span class="string">on</span>;
+
+sgtitle(<span class="string">'An&aacute;lisis de Serie de Fourier'</span>);
+</pre>
+<img vspace="5" hspace="5" src="prueba7_01.png" alt=""> <h2 id="2">Problema 2</h2>
+<p>La serie de fourier exponencial completa es <img src="prueba7_eq12767051270153231660.png" alt="$x(t) = \frac{1}{2} + \frac{2}{\pi} \sum_{n=1}^{\infty} \frac{(-1)^n}{2n-1} \cos(2n-1)w_0t$" style="width:247px;height:21px;"> y la compacta seria <img src="prueba7_eq04039352484802735801.png" alt="$x(t) = \frac{1}{2} + \frac{2}{\pi} \left( \cos(w_0 t) + \frac{1}{3} \cos(3w_0 t - \pi) + \frac{1}{5} \cos(5w_0 t) + \frac{1}{7} \cos(w_0 t - \pi) + \frac{1}{9} \cos(9w_0 t) + \ldots \right)$" style="width:585px;height:18px;"></p>
+<pre class="codeinput">
+<span class="comment">% Par&aacute;metros de la se&ntilde;al</span>
+T = 2 * pi; <span class="comment">% Per&iacute;odo fundamental (2*pi/ω0)</span>
+N = 15;  <span class="comment">% N&uacute;mero de arm&oacute;nicos</span>
+t = linspace(0, 5*T, 1000); <span class="comment">% Intervalo de tiempo para graficar</span>
+x = zeros(size(t)); <span class="comment">% Inicializa x con ceros</span>
+
+<span class="comment">% C&aacute;lculo de la serie de Fourier</span>
+<span class="keyword">for</span> n = 1:N
+    x = x + (1 / (2 * n - 1)) * cos((2 * n - 1) * t);
+<span class="keyword">end</span>
+x = (2 / pi) * x + 1/2;
+
+<span class="comment">% C&aacute;lculo del error</span>
+<span class="comment">% error = abs(x - (1/2 + (2/pi) * cos(t)));</span>
+<span class="comment">% error_energy = sum(error.^2);</span>
+
+<span class="comment">% C&aacute;lculo del error</span>
+error = abs(x - (1/2 + (2/pi) * cos(t)));
+error_energy = trapz(t, error.^2);
+
+
+<span class="comment">% Crear una figura m&aacute;s grande con 3 filas y 2 columnas</span>
+figure(<span class="string">'Position'</span>, [100, 100, 1000, 800]);
+
+<span class="comment">% 1. Gr&aacute;fica de la serie de Fourier</span>
+subplot(3, 2, 1);
+plot(t, x, <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 2);
+title(<span class="string">'Serie de Fourier (15 arm&oacute;nicos)'</span>);
+xlabel(<span class="string">'Tiempo'</span>);
+ylabel(<span class="string">'x(t)'</span>);
+
+<span class="comment">% 2. Gr&aacute;fica de la se&ntilde;al y la serie de Fourier (para 15 arm&oacute;nicos)</span>
+subplot(3, 2, 2);
+plot(t, x, <span class="string">'r'</span>, <span class="string">'LineWidth'</span>, 2);
+hold <span class="string">on</span>;
+plot(t, 1/2 + (2/pi) * cos(t), <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2);
+title(<span class="string">'Se&ntilde;al y Serie de Fourier (15 arm&oacute;nicos)'</span>);
+xlabel(<span class="string">'Tiempo'</span>);
+ylabel(<span class="string">'x(t)'</span>);
+legend(<span class="string">'Serie de Fourier'</span>, <span class="string">'Se&ntilde;al original'</span>);
+
+<span class="comment">% 3. Gr&aacute;fica del error</span>
+subplot(3, 2, 3);
+plot(t, error, <span class="string">'g'</span>, <span class="string">'LineWidth'</span>, 2);
+title(<span class="string">'Error entre la Serie de Fourier y la Se&ntilde;al original'</span>);
+xlabel(<span class="string">'Tiempo'</span>);
+ylabel(<span class="string">'Error'</span>);
+
+<span class="comment">% 4. Gr&aacute;fica de la energ&iacute;a del error</span>
+subplot(3, 2, 4);
+bar(1, error_energy, <span class="string">'c'</span>);
+title(<span class="string">'Energ&iacute;a del error'</span>);
+
+<span class="comment">% 5. Espectro de magnitud</span>
+subplot(3, 2, 5);
+frequencies = 1:2:2*N-1; <span class="comment">% Frecuencias de los arm&oacute;nicos</span>
+amplitudes = 4./(pi*frequencies);
+stem(frequencies, amplitudes, <span class="string">'k'</span>, <span class="string">'LineWidth'</span>, 2);
+title(<span class="string">'Espectro de Magnitud (15 arm&oacute;nicos)'</span>);
+xlabel(<span class="string">'Frecuencia'</span>);
+ylabel(<span class="string">'Amplitud'</span>);
+
+<span class="comment">% 6. Espectro de fase</span>
+subplot(3, 2, 6);
+phases = atan(-2./(pi*frequencies));
+stem(frequencies, phases, <span class="string">'b'</span>, <span class="string">'LineWidth'</span>, 2);
+title(<span class="string">'Espectro de Fase (15 arm&oacute;nicos)'</span>);
+xlabel(<span class="string">'Frecuencia'</span>);
+ylabel(<span class="string">'Fase (radianes)'</span>);
+</pre>
+<img vspace="5" hspace="5" src="prueba7_02.png" alt=""> <h2 id="3">Problema 3</h2>
+<p>Se realiza las graficas para los problemas de la actividad PR08</p>
+<pre class="codeinput">
+<span class="comment">% # Primer problema</span>
+<span class="comment">% Definir los par&aacute;metros de la se&ntilde;al</span>
+a0 = 2; <span class="comment">% Debes asignar el valor de a0</span>
+N = 15; <span class="comment">% N&uacute;mero de arm&oacute;nicos</span>
+<span class="comment">%T = 2;</span>
+T= 2 * pi;
+w0 = 2*pi/T; <span class="comment">% Frecuencia angular</span>
+<span class="comment">% Crear un vector de tiempo para el intervalo que muestre 5 repeticiones</span>
+t = -5*T:0.001:5*T;
+
+<span class="comment">% Inicializar las variables para la serie de Fourier y el error</span>
+x_t = zeros(size(t)); <span class="comment">% Serie de Fourier</span>
+error_t = zeros(size(t)); <span class="comment">% Error</span>
+
+<span class="comment">% Calcular la serie de Fourier</span>
+<span class="keyword">for</span> n = 1:N
+    Cn = -2*(-1)^n/(pi*n);
+    x_t = x_t + Cn*sin(n*w0*t);
+<span class="keyword">end</span>
+
+<span class="comment">% Calcular el error</span>
+x_original = a0 * ones(size(t));
+error_t = x_original - x_t;
+
+<span class="comment">% Calcular la energ&iacute;a del error</span>
+error_energy = sum(abs(error_t).^2);
+
+<span class="comment">% Calcular el espectro de magnitud y fase</span>
+frequencies = 1:N; <span class="comment">% Cambio aqu&iacute; para comenzar desde 1</span>
+amplitude_spectrum = zeros(size(frequencies));
+phase_spectrum = zeros(size(frequencies));
+
+<span class="keyword">for</span> n = 1:N
+    Cn = -2*(-1)^n/(pi*n);
+    amplitude_spectrum(n) = abs(Cn);
+    phase_spectrum(n) = angle(Cn);
+<span class="keyword">end</span>
+
+<span class="comment">% Gr&aacute;ficas</span>
+subplot(3,2,1);
+plot(t, x_t);
+title(<span class="string">'Serie de Fourier'</span>);
+xlabel(<span class="string">'Tiempo'</span>);
+ylabel(<span class="string">'Amplitud'</span>);
+
+subplot(3,2,2);
+plot(t, x_original, t, x_t);
+title(<span class="string">'Se&ntilde;al original y Serie de Fourier'</span>);
+xlabel(<span class="string">'Tiempo'</span>);
+ylabel(<span class="string">'Amplitud'</span>);
+legend(<span class="string">'Se&ntilde;al Original'</span>, <span class="string">'Serie de Fourier'</span>);
+
+subplot(3,2,3);
+plot(t, error_t);
+title(<span class="string">'Error'</span>);
+xlabel(<span class="string">'Tiempo'</span>);
+ylabel(<span class="string">'Amplitud'</span>);
+
+subplot(3,2,4);
+stem(frequencies, amplitude_spectrum);
+title(<span class="string">'Espectro de Magnitud'</span>);
+xlabel(<span class="string">'Armonico'</span>);
+ylabel(<span class="string">'Amplitud'</span>);
+
+subplot(3,2,5);
+stem(frequencies, phase_spectrum);
+title(<span class="string">'Espectro de Fase'</span>);
+xlabel(<span class="string">'Armonico'</span>);
+ylabel(<span class="string">'Fase'</span>);
+
+subplot(3,2,6);
+bar(frequencies, error_energy * ones(size(frequencies)), <span class="string">'stacked'</span>);
+title(<span class="string">'Energ&iacute;a del Error'</span>);
+xlabel(<span class="string">'Armonico'</span>);
+ylabel(<span class="string">'Energ&iacute;a del Error'</span>);
+
+<span class="comment">% Ajustar la escala de la gr&aacute;fica de energ&iacute;a del error para una mejor visualizaci&oacute;n</span>
+ylim([0, max(error_energy) + 0.1]);
+</pre>
+<img vspace="5" hspace="5" src="prueba7_03.png" alt=""> <p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2023b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% Práctica 7: Series de Fourier en tiempo continuo
+%  * Moreno Castro José Pablo
+% * Pedraza Ocampo Eduardo
+% * Portillo Martínez Carolina
+% * Reyes Alvarez Angel
+
+
+%% Problema 1
+% La serie de fourier exponencial completa es $x(t) = \frac{8A}{\pi^2} [ \cos(\pi t - 90^\circ) + \frac{1}{9} \cos(3\pi t + 90^\circ) + \frac{1}{25} \cos(5\pi t - 90^\circ) + \frac{1}{49} \cos (7\pi t + 90^\circ) + \ldots ]$  y la compacta es $x(t) = \frac{8A}{\pi^2} \sum_{n = 1, 3, 5, 7, \ldots} \frac{1}{n^2} \cos(2\pi n t - 90^\circ)$
+A = 1;
+T = 2;
+f0 = 1 / T;
+N = 8; % Cambia este valor a la cantidad de armónicos deseada
+
+t = linspace(-5 * T, 5 * T, 1000);
+
+x_t = (8 * A / pi^2) * cos(2 * pi * 1 * f0 * t - pi/2);
+for n = 3:2:2*N-1
+    x_t = x_t + (8 * A / (pi^2 * n^2)) * cos(2 * pi * n * f0 * t - pi/2);
+end
+
+% Crea una figura más grande con 3 filas y 2 columnas
+figure('Position', [100, 100, 1000, 800]);
+
+% Gráfica de la Serie de Fourier
+subplot(3, 2, 1);
+plot(t, x_t, 'LineWidth', 2); % Línea más gruesa
+xlabel('t');
+ylabel('x(t)');
+title('Serie de Fourier (5 Repeticiones)');
+grid on;
+
+% Genera la señal cuadrada manualmente
+x_original = zeros(size(t));
+for i = 1:numel(t)
+    if sin(2 * pi * f0 * t(i)) >= 0
+        x_original(i) = A;
+    else
+        x_original(i) = -A;
+    end
+end
+
+% Gráfica de la Señal Original y Serie de Fourier
+subplot(3, 2, 2);
+plot(t, x_t, 'b', 'LineWidth', 2); % Línea más gruesa y color azul
+hold on;
+plot(t, x_original, 'r', 'LineWidth', 2); % Línea más gruesa y color rojo
+xlabel('t');
+ylabel('x(t)');
+title('Señal Original y Serie de Fourier (15 Armónicos)');
+legend('Serie de Fourier', 'Señal Original');
+grid on;
+
+% Error (Diferencia entre Señal Original y Serie de Fourier)
+error_t = x_original - x_t;
+subplot(3, 2, 3);
+plot(t, error_t, 'g', 'LineWidth', 2); % Línea más gruesa y color verde
+xlabel('t');
+ylabel('Error');
+title('Error (Diferencia entre Señal Original y Serie de Fourier)');
+grid on;
+
+% Energía del Error
+E_error = trapz(t, error_t.^2);
+subplot(3, 2, 4);
+plot(t, error_t.^2, 'm', 'LineWidth', 2); % Línea más gruesa y color magenta
+xlabel('t');
+ylabel('Energía');
+title(['Energía del Error = ' num2str(E_error)]);
+grid on;
+
+% Espectro de Magnitud (15 Armónicos)
+frequencies = 0:f0:(N-1)*f0; % Ajusta el rango de frecuencias
+magnitudes = (8 * A / pi^2) * (1 ./ (1:2:2*N-1)).^2;
+subplot(3, 2, 5);
+stem(frequencies, magnitudes, 'b', 'LineWidth', 2); % Línea más gruesa y color azul
+xlabel('Frecuencia (Hz)');
+ylabel('Magnitud');
+title('Espectro de Magnitud (15 Armónicos)');
+grid on;
+
+% Espectro de Fase (15 Armónicos)
+phases = ones(1, N) * (-pi/2);
+subplot(3, 2, 6);
+stem(frequencies, phases, 'b', 'LineWidth', 2); % Línea más gruesa y color azul
+xlabel('Frecuencia (Hz)');
+ylabel('Fase (rad)');
+title('Espectro de Fase (15 Armónicos)');
+grid on;
+
+sgtitle('Análisis de Serie de Fourier');
+
+
+%% Problema 2
+% La serie de fourier exponencial completa es $x(t) = \frac{1}{2} +
+% \frac{2}{\pi} \sum_{n=1}^{\infty} \frac{(-1)^n}{2n-1} \cos(2n-1)w_0t$ y
+% la compacta seria $x(t) = \frac{1}{2} + \frac{2}{\pi} \left( \cos(w_0 t) + \frac{1}{3} \cos(3w_0 t - \pi) + \frac{1}{5} \cos(5w_0 t) + \frac{1}{7} \cos(w_0 t - \pi) + \frac{1}{9} \cos(9w_0 t) + \ldots \right)$ 
+% 
+
+% Parámetros de la señal
+T = 2 * pi; % Período fundamental (2*pi/ω0)
+N = 15;  % Número de armónicos
+t = linspace(0, 5*T, 1000); % Intervalo de tiempo para graficar
+x = zeros(size(t)); % Inicializa x con ceros
+
+% Cálculo de la serie de Fourier
+for n = 1:N
+    x = x + (1 / (2 * n - 1)) * cos((2 * n - 1) * t);
+end
+x = (2 / pi) * x + 1/2;
+
+% Cálculo del error
+% error = abs(x - (1/2 + (2/pi) * cos(t)));
+% error_energy = sum(error.^2);
+
+% Cálculo del error
+error = abs(x - (1/2 + (2/pi) * cos(t)));
+error_energy = trapz(t, error.^2);
+
+
+% Crear una figura más grande con 3 filas y 2 columnas
+figure('Position', [100, 100, 1000, 800]);
+
+% 1. Gráfica de la serie de Fourier
+subplot(3, 2, 1);
+plot(t, x, 'r', 'LineWidth', 2);
+title('Serie de Fourier (15 armónicos)');
+xlabel('Tiempo');
+ylabel('x(t)');
+
+% 2. Gráfica de la señal y la serie de Fourier (para 15 armónicos)
+subplot(3, 2, 2);
+plot(t, x, 'r', 'LineWidth', 2);
+hold on;
+plot(t, 1/2 + (2/pi) * cos(t), 'b', 'LineWidth', 2);
+title('Señal y Serie de Fourier (15 armónicos)');
+xlabel('Tiempo');
+ylabel('x(t)');
+legend('Serie de Fourier', 'Señal original');
+
+% 3. Gráfica del error
+subplot(3, 2, 3);
+plot(t, error, 'g', 'LineWidth', 2);
+title('Error entre la Serie de Fourier y la Señal original');
+xlabel('Tiempo');
+ylabel('Error');
+
+% 4. Gráfica de la energía del error
+subplot(3, 2, 4);
+bar(1, error_energy, 'c');
+title('Energía del error');
+
+% 5. Espectro de magnitud
+subplot(3, 2, 5);
+frequencies = 1:2:2*N-1; % Frecuencias de los armónicos
+amplitudes = 4./(pi*frequencies);
+stem(frequencies, amplitudes, 'k', 'LineWidth', 2);
+title('Espectro de Magnitud (15 armónicos)');
+xlabel('Frecuencia');
+ylabel('Amplitud');
+
+% 6. Espectro de fase
+subplot(3, 2, 6);
+phases = atan(-2./(pi*frequencies));
+stem(frequencies, phases, 'b', 'LineWidth', 2);
+title('Espectro de Fase (15 armónicos)');
+xlabel('Frecuencia');
+ylabel('Fase (radianes)');
+
+
+%% Problema 3
+% Se realiza las graficas para los problemas de la actividad PR08
+
+% # Primer problema
+% Definir los parámetros de la señal
+a0 = 2; % Debes asignar el valor de a0
+N = 15; % Número de armónicos
+%T = 2;
+T= 2 * pi;
+w0 = 2*pi/T; % Frecuencia angular
+% Crear un vector de tiempo para el intervalo que muestre 5 repeticiones
+t = -5*T:0.001:5*T;
+
+% Inicializar las variables para la serie de Fourier y el error
+x_t = zeros(size(t)); % Serie de Fourier
+error_t = zeros(size(t)); % Error
+
+% Calcular la serie de Fourier
+for n = 1:N
+    Cn = -2*(-1)^n/(pi*n);
+    x_t = x_t + Cn*sin(n*w0*t);
+end
+
+% Calcular el error
+x_original = a0 * ones(size(t));
+error_t = x_original - x_t;
+
+% Calcular la energía del error
+error_energy = sum(abs(error_t).^2);
+
+% Calcular el espectro de magnitud y fase
+frequencies = 1:N; % Cambio aquí para comenzar desde 1
+amplitude_spectrum = zeros(size(frequencies));
+phase_spectrum = zeros(size(frequencies));
+
+for n = 1:N
+    Cn = -2*(-1)^n/(pi*n);
+    amplitude_spectrum(n) = abs(Cn);
+    phase_spectrum(n) = angle(Cn);
+end
+
+% Gráficas
+subplot(3,2,1);
+plot(t, x_t);
+title('Serie de Fourier');
+xlabel('Tiempo');
+ylabel('Amplitud');
+
+subplot(3,2,2);
+plot(t, x_original, t, x_t);
+title('Señal original y Serie de Fourier');
+xlabel('Tiempo');
+ylabel('Amplitud');
+legend('Señal Original', 'Serie de Fourier');
+
+subplot(3,2,3);
+plot(t, error_t);
+title('Error');
+xlabel('Tiempo');
+ylabel('Amplitud');
+
+subplot(3,2,4);
+stem(frequencies, amplitude_spectrum);
+title('Espectro de Magnitud');
+xlabel('Armonico');
+ylabel('Amplitud');
+
+subplot(3,2,5);
+stem(frequencies, phase_spectrum);
+title('Espectro de Fase');
+xlabel('Armonico');
+ylabel('Fase');
+
+subplot(3,2,6);
+bar(frequencies, error_energy * ones(size(frequencies)), 'stacked');
+title('Energía del Error');
+xlabel('Armonico');
+ylabel('Energía del Error');
+
+% Ajustar la escala de la gráfica de energía del error para una mejor visualización
+ylim([0, max(error_energy) + 0.1]);
+##### SOURCE END #####
+-->
+</body>
+</html>
